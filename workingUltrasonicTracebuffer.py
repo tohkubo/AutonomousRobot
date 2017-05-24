@@ -1,3 +1,4 @@
+import time
 from pprint import pprint
 from pynq import PL
 from pynq import Overlay
@@ -6,17 +7,13 @@ from pynq.iop import Pmod_TMP2
 from pynq.iop import PMODA
 from pynq.iop import PMODB
 from pynq.iop import ARDUINO
-from pynq import Overlay
-Overlay("base.bit").download()
-
 from pynq.iop import iop_const
 from pynq.iop import DevMode
 from pynq.iop import Arduino_IO
-import time
-
-from pynq.iop import iop_const
-from pynq.iop import DevMode
 from pynq.iop import Pmod_IO
+from pynq import Overlay
+Overlay("base.bit").download()
+
 
 tmp2 = Pmod_TMP2(PMODA)
 tmp2.set_log_interval_ms(1)
@@ -39,7 +36,7 @@ trigPin.write(0)
 
 # Issue reads for 1 second
 tmp2.start_log()
-sleep(1)
+time.sleep(1)
 tmp2_log = tmp2.get_log()
 
 # Stop the trace buffer
