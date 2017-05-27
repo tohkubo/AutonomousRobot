@@ -1,3 +1,8 @@
+# configuration:
+#   brown (-)
+#   red (+)
+#   orange (signal)
+
 import time
 from pynq.iop import Pmod_PWM
 from pynq.iop import PMODB
@@ -9,7 +14,8 @@ signal = Pmod_PWM(PMODB, 0)
 # Generate a 10 us clocks with 50% duty cycle
 period = 20000
 
-#6 is in the middle and 4 is 30 degree clockwise 8 is 30 degree counterclockwise
+# 6 is in the middle and 4 is 30 degree clockwise 8 is 30 degree counterclockwise
+# rotation: 1 (0) - 6 (90) - 11 (180) 
 duty = 4   
 
 signal.generate(period,duty)
