@@ -158,14 +158,14 @@ int main(void)
                 iop_pins[16] = D_GPIO;
                 iop_pins[17] = D_GPIO;
                 iop_pins[18] = D_GPIO;
-                config_arduino_switch(iop_pins[0], iop_pins[1], iop_pins[2], 
-                                      iop_pins[3], iop_pins[4], iop_pins[5], 
+                config_arduino_switch(iop_pins[0], iop_pins[1], iop_pins[2],
+                                      iop_pins[3], iop_pins[4], iop_pins[5],
                                       iop_pins[6], iop_pins[7],
-                                      iop_pins[8], iop_pins[9], 
-                                      iop_pins[10], iop_pins[11], 
-                                      iop_pins[12], iop_pins[13], 
+                                      iop_pins[8], iop_pins[9],
+                                      iop_pins[10], iop_pins[11],
+                                      iop_pins[12], iop_pins[13],
                                       iop_pins[14], iop_pins[15],
-                                      iop_pins[16], iop_pins[17], 
+                                      iop_pins[16], iop_pins[17],
                                       iop_pins[18]);
                 MAILBOX_CMD_ADDR = 0x0;
                 break;
@@ -173,11 +173,12 @@ int main(void)
             case GET_RAW_DATA:
                 i=0;
                 // Wait for the conversion complete
-                while ((XSysMon_GetStatus(SysMonInstPtr) & 
+                while ((XSysMon_GetStatus(SysMonInstPtr) &
                         XSM_SR_EOS_MASK) != XSM_SR_EOS_MASK);
                 data_channels = MAILBOX_CMD_ADDR >> 8;
                 if(data_channels & 0x1)
-                    MAILBOX_DATA(i++) = XSysMon_GetAdcData(SysMonInstPtr,
+                    MAILBOX_DATA(i++) =
+                     XSysMon_GetAdcData(SysMonInstPtr,
                                             XSM_CH_AUX_MIN+1);
                 if(data_channels & 0x2)
                     MAILBOX_DATA(i++) = XSysMon_GetAdcData(SysMonInstPtr,
@@ -200,12 +201,35 @@ int main(void)
             case GET_VOLTAGE:
                 i=0;
                 // Wait for the conversion complete
-                while ((XSysMon_GetStatus(SysMonInstPtr) & 
+                while ((XSysMon_GetStatus(SysMonInstPtr) &
                         XSM_SR_EOS_MASK) != XSM_SR_EOS_MASK);
                 data_channels = MAILBOX_CMD_ADDR >> 8;
-                if(data_channels & 0x1)
-                    MAILBOX_DATA_FLOAT(i++) = (float)(XSysMon_GetAdcData(
-                                SysMonInstPtr,XSM_CH_AUX_MIN+1)*V_Conv);
+                if(data_channels & 0x1){
+                    /*int a = 0;
+
+                    while(1){
+                      float sample = (float)XSysMon_GetAdcData(SysMonInstPtr,XSM_CH_AUX_MIN+1)*V_Conv;
+                      if(sample > 1.000){
+                        MAILBOX_DATA_FLOAT(i++) = sample;
+                        break;
+                      }
+                      a++;
+                      if(a>100000){
+                        MAILBOX_DATA_FLOAT(i++) = (float)a;
+                        break;
+                      }
+
+                    }
+                  */
+                    int cycles = 0;
+                    while((XSysMon_GetAdcData(SysMonInstPtr,XSM_CH_AUX_MIN+1)*V_Conv) < 2.000){
+                    }
+                    while((XSysMon_GetAdcData(SysMonInstPtr,XSM_CH_AUX_MIN+1)*V_Conv) >= 2.000){
+                        cycles++;
+                    }
+                    MAILBOX_DATA_FLOAT(i++) = (float)cycles;
+
+                }
                 if(data_channels & 0x2)
                     MAILBOX_DATA_FLOAT(i++) = (float)(XSysMon_GetAdcData(
                                 SysMonInstPtr,XSM_CH_AUX_MIN+9)*V_Conv);
@@ -230,15 +254,15 @@ int main(void)
                 // get channels to be sampled
                 data_channels = MAILBOX_CMD_ADDR >> 8;
                 // allocate 1000 samples per channel
-                log_capacity = 4000 / LOG_INT_SIZE * 
+                log_capacity = 4000 / LOG_INT_SIZE *
                                count_set_bits(data_channels);
-                cb_init(&arduino_log, LOG_BASE_ADDRESS, 
+                cb_init(&arduino_log, LOG_BASE_ADDRESS,
                         log_capacity, LOG_INT_SIZE);
                 while(MAILBOX_CMD_ADDR != RESET_ANALOG){
                     // wait for sample conversion
-                    while ((XSysMon_GetStatus(SysMonInstPtr) & 
+                    while ((XSysMon_GetStatus(SysMonInstPtr) &
                             XSM_SR_EOS_MASK) != XSM_SR_EOS_MASK);
-                            
+
                     if(data_channels & 0x1) {
                         xadc_raw_value = XSysMon_GetAdcData(SysMonInstPtr,
                                                         XSM_CH_AUX_MIN+1);
@@ -280,15 +304,15 @@ int main(void)
                 // get channels to be sampled
                 data_channels = MAILBOX_CMD_ADDR >> 8;
                 // allocate 1000 samples per channel
-                log_capacity = 4000 / LOG_FLOAT_SIZE * 
+                log_capacity = 4000 / LOG_FLOAT_SIZE *
                                count_set_bits(data_channels);
-                cb_init(&arduino_log, LOG_BASE_ADDRESS, 
+                cb_init(&arduino_log, LOG_BASE_ADDRESS,
                         log_capacity, LOG_FLOAT_SIZE);
                 while(MAILBOX_CMD_ADDR != RESET_ANALOG){
                     // wait for sample conversion
-                    while ((XSysMon_GetStatus(SysMonInstPtr) & 
+                    while ((XSysMon_GetStatus(SysMonInstPtr) &
                             XSM_SR_EOS_MASK) != XSM_SR_EOS_MASK);
-                            
+
                     if(data_channels & 0x1) {
                         xadc_voltage = (float)(XSysMon_GetAdcData(
                                 SysMonInstPtr,XSM_CH_AUX_MIN+1)*V_Conv);
@@ -323,13 +347,13 @@ int main(void)
                 }
                 MAILBOX_CMD_ADDR = 0x0;
                 break;
-            
+
             case RESET_ANALOG:
                 // SysMon Initialize
                 SysMonConfigPtr = XSysMon_LookupConfig(SYSMON_DEVICE_ID);
                 if(SysMonConfigPtr == NULL)
                     xil_printf("SysMon LookupConfig failed.\n\r");
-                xStatus = XSysMon_CfgInitialize(SysMonInstPtr, 
+                xStatus = XSysMon_CfgInitialize(SysMonInstPtr,
                             SysMonConfigPtr, SysMonConfigPtr->BaseAddress);
                 if(XST_SUCCESS != xStatus)
                     xil_printf("SysMon CfgInitialize failed.\r\n");
@@ -337,7 +361,7 @@ int main(void)
                 XSysMon_GetStatus(SysMonInstPtr);
                 MAILBOX_CMD_ADDR = 0x0;
                 break;
-            
+
             default:
                 MAILBOX_CMD_ADDR = 0x0;
                 break;
