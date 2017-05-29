@@ -1,7 +1,7 @@
 # Makefile to build select Microblaze projects.
 
 
-MBBINS = pmod_adc2.bin \
+MBBINS = arduino_analog.bin \
 		arduino_lcd18.bin
 
 all: iop_bins

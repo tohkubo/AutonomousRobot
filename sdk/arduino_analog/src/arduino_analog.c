@@ -56,6 +56,7 @@
 #include "xparameters.h"
 #include "arduino.h"
 #include "xsysmon.h"
+#include "time.h"
 
 // Mailbox commands
 #define CONFIG_IOP_SWITCH       0x1
@@ -227,7 +228,10 @@ int main(void)
                     while((XSysMon_GetAdcData(SysMonInstPtr,XSM_CH_AUX_MIN+1)*V_Conv) >= 2.000){
                         cycles++;
                     }
-                    MAILBOX_DATA_FLOAT(i++) = (float)cycles;
+                    if(cycles < 2000)
+                        MAILBOX_DATA_FLOAT(i++) = (float)cycles;
+                    else
+                        return (float)-1;
 
                 }
                 if(data_channels & 0x2)
