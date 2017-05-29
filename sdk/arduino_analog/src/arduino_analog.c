@@ -57,6 +57,7 @@
 #include "arduino.h"
 #include "xsysmon.h"
 #include "time.h"
+#include "sys/time.h"
 
 // Mailbox commands
 #define CONFIG_IOP_SWITCH       0x1
@@ -98,6 +99,11 @@ int count_set_bits(unsigned int n)
     n >>= 1;
   }
   return count;
+}
+long getMicrotime(){
+ struct timeval currentTime;
+ gettimeofday(&currentTime, '\0');
+ return currentTime.tv_sec * (int)1e6 + currentTime.tv_usec;
 }
 
 int main(void)
@@ -224,14 +230,19 @@ int main(void)
                   */
                     int cycles = 0;
                     while((XSysMon_GetAdcData(SysMonInstPtr,XSM_CH_AUX_MIN+1)*V_Conv) < 2.000){
+                        if(cycles > 2000){
+                          MAILBOX_DATA_FLOAT(i++) = (float)691;
+                        }
+                        cycles++;
                     }
+                    cycles = 0;
                     while((XSysMon_GetAdcData(SysMonInstPtr,XSM_CH_AUX_MIN+1)*V_Conv) >= 2.000){
                         cycles++;
                     }
-                    if(cycles < 2000)
+                    if(cycles < 3000)
                         MAILBOX_DATA_FLOAT(i++) = (float)cycles;
                     else
-                        return (float)-1;
+                        MAILBOX_DATA_FLOAT(i++) = (float)(690);
 
                 }
                 if(data_channels & 0x2)
