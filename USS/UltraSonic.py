@@ -14,7 +14,7 @@ from pynq.iop import PMODA
 class Sensor:
     
     def __init__(self):
-        self.values = None
+        self.values = list()
         self.trig = Pmod_IO(PMODA, 0, "out")
         self.echo = Arduino_Analog(ARDUINO, [0])
 
