@@ -17,10 +17,6 @@ class UltraSonic:
         self.values = None
         self.trig = Pmod_IO(PMODA, 0, "out")
         self.echo = Arduino_Analog(ARDUINO, [0])
-    
-    def __str__(self):
-        return 'Values: ' + ', '.join([str(v) for v in self.values]) \
-                if len(self.values) != 1 else 'Mean: {}'.format(self.values)
 
     def getDistance(self):
         self.trig.write(0)
