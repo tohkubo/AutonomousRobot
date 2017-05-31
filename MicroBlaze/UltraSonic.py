@@ -11,7 +11,7 @@ from pynq.iop import Arduino_IO
 from pynq.iop import Pmod_IO
 from pynq.iop import PMODA
 
-class MicroBlaze:
+class UltraSonic:
     
     def __init__(self):
         self.values = None
