@@ -57,7 +57,8 @@
 #include "arduino.h"
 #include "xsysmon.h"
 #include "time.h"
-#include "sys/time.h"
+#include <sys/time.h>
+#include <stdio.h>
 
 // Mailbox commands
 #define CONFIG_IOP_SWITCH       0x1
@@ -99,11 +100,6 @@ int count_set_bits(unsigned int n)
     n >>= 1;
   }
   return count;
-}
-long getMicrotime(){
- struct timeval currentTime;
- gettimeofday(&currentTime, '\0');
- return currentTime.tv_sec * (int)1e6 + currentTime.tv_usec;
 }
 
 int main(void)
@@ -212,37 +208,24 @@ int main(void)
                         XSM_SR_EOS_MASK) != XSM_SR_EOS_MASK);
                 data_channels = MAILBOX_CMD_ADDR >> 8;
                 if(data_channels & 0x1){
-                    /*int a = 0;
 
-                    while(1){
-                      float sample = (float)XSysMon_GetAdcData(SysMonInstPtr,XSM_CH_AUX_MIN+1)*V_Conv;
-                      if(sample > 1.000){
-                        MAILBOX_DATA_FLOAT(i++) = sample;
-                        break;
-                      }
-                      a++;
-                      if(a>100000){
-                        MAILBOX_DATA_FLOAT(i++) = (float)a;
-                        break;
-                      }
 
-                    }
-                  */
                     int cycles = 0;
                     while((XSysMon_GetAdcData(SysMonInstPtr,XSM_CH_AUX_MIN+1)*V_Conv) < 2.000){
-                        if(cycles > 2000){
+                        if(cycles > 800){
                           MAILBOX_DATA_FLOAT(i++) = (float)691;
+                          break;
                         }
                         cycles++;
                     }
                     cycles = 0;
                     while((XSysMon_GetAdcData(SysMonInstPtr,XSM_CH_AUX_MIN+1)*V_Conv) >= 2.000){
                         cycles++;
+                        if(cycles > 800)
+                            break;
                     }
-                    if(cycles < 3000)
-                        MAILBOX_DATA_FLOAT(i++) = (float)cycles;
-                    else
-                        MAILBOX_DATA_FLOAT(i++) = (float)(690);
+                    MAILBOX_DATA_FLOAT(i++) = (float)cycles;
+
 
                 }
                 if(data_channels & 0x2)
