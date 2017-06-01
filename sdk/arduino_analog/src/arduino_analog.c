@@ -207,6 +207,8 @@ int main(void)
                 while ((XSysMon_GetStatus(SysMonInstPtr) &
                         XSM_SR_EOS_MASK) != XSM_SR_EOS_MASK);
                 data_channels = MAILBOX_CMD_ADDR >> 8;
+
+
                 if(data_channels & 0x1){
 
 
@@ -228,18 +230,80 @@ int main(void)
 
 
                 }
-                if(data_channels & 0x2)
-                    MAILBOX_DATA_FLOAT(i++) = (float)(XSysMon_GetAdcData(
-                                SysMonInstPtr,XSM_CH_AUX_MIN+9)*V_Conv);
-                if(data_channels & 0x4)
-                    MAILBOX_DATA_FLOAT(i++) = (float)(XSysMon_GetAdcData(
-                                SysMonInstPtr,XSM_CH_AUX_MIN+6)*V_Conv);
-                if(data_channels & 0x8)
-                    MAILBOX_DATA_FLOAT(i++) = (float)(XSysMon_GetAdcData(
-                                SysMonInstPtr,XSM_CH_AUX_MIN+15)*V_Conv);
-                if(data_channels & 0x10)
-                    MAILBOX_DATA_FLOAT(i++) = (float)(XSysMon_GetAdcData(
-                                SysMonInstPtr,XSM_CH_AUX_MIN+5)*V_Conv);
+                if(data_channels & 0x2){
+                  int cycles = 0;
+                  while((XSysMon_GetAdcData(SysMonInstPtr,XSM_CH_AUX_MIN+9)*V_Conv) < 2.000){
+                      if(cycles > 800){
+                        MAILBOX_DATA_FLOAT(i++) = (float)691;
+                        break;
+                      }
+                      cycles++;
+                  }
+                  cycles = 0;
+                  while((XSysMon_GetAdcData(SysMonInstPtr,XSM_CH_AUX_MIN+9)*V_Conv) >= 2.000){
+                      cycles++;
+                      if(cycles > 800)
+                          break;
+                  }
+                  MAILBOX_DATA_FLOAT(i++) = (float)cycles;
+
+                }
+
+                if(data_channels & 0x4){
+                  int cycles = 0;
+                  while((XSysMon_GetAdcData(SysMonInstPtr,XSM_CH_AUX_MIN+6)*V_Conv) < 2.000){
+                      if(cycles > 800){
+                        MAILBOX_DATA_FLOAT(i++) = (float)691;
+                        break;
+                      }
+                      cycles++;
+                  }
+                  cycles = 0;
+                  while((XSysMon_GetAdcData(SysMonInstPtr,XSM_CH_AUX_MIN+6)*V_Conv) >= 2.000){
+                      cycles++;
+                      if(cycles > 800)
+                          break;
+                  }
+                  MAILBOX_DATA_FLOAT(i++) = (float)cycles;
+
+                }
+
+                if(data_channels & 0x8) {//15
+                  int cycles = 0;
+                  while((XSysMon_GetAdcData(SysMonInstPtr,XSM_CH_AUX_MIN+15)*V_Conv) < 2.000){
+                      if(cycles > 800){
+                        MAILBOX_DATA_FLOAT(i++) = (float)691;
+                        break;
+                      }
+                      cycles++;
+                  }
+                  cycles = 0;
+                  while((XSysMon_GetAdcData(SysMonInstPtr,XSM_CH_AUX_MIN+15)*V_Conv) >= 2.000){
+                      cycles++;
+                      if(cycles > 800)
+                          break;
+                  }
+                  MAILBOX_DATA_FLOAT(i++) = (float)cycles;
+
+                }
+                if(data_channels & 0x10){//5
+                  int cycles = 0;
+                  while((XSysMon_GetAdcData(SysMonInstPtr,XSM_CH_AUX_MIN+5)*V_Conv) < 2.000){
+                      if(cycles > 800){
+                        MAILBOX_DATA_FLOAT(i++) = (float)691;
+                        break;
+                      }
+                      cycles++;
+                  }
+                  cycles = 0;
+                  while((XSysMon_GetAdcData(SysMonInstPtr,XSM_CH_AUX_MIN+5)*V_Conv) >= 2.000){
+                      cycles++;
+                      if(cycles > 800)
+                          break;
+                  }
+                  MAILBOX_DATA_FLOAT(i++) = (float)cycles;
+
+                }
                 if(data_channels & 0x20)
                     MAILBOX_DATA_FLOAT(i++) = (float)(XSysMon_GetAdcData(
                                 SysMonInstPtr,XSM_CH_AUX_MIN+13)*V_Conv);
