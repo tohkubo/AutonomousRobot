@@ -13,10 +13,10 @@ from pynq.iop import PMODA
 
 class Sensor:
     
-    def __init__(self,trig):
+    def __init__(self,trigger,echo):
         self.values = list()
-        self.trig = Pmod_IO(PMODA, trig, "out")
-        self.echo = Arduino_Analog(ARDUINO, [0])
+        self.trig = Pmod_IO(PMODA, trigger, "out")
+        self.echo = Arduino_Analog(ARDUINO, [echo])
 
     def getDistance(self):
         self.trig.write(0)
