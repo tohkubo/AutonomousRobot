@@ -13,7 +13,7 @@ from pynq.iop import PMODA
 
 class Sensor:
     
-    def __init__(self,trigger,echo):
+    def __init__(self, trigger, echo):
         self.values = list()
         self.trig = Pmod_IO(PMODA, trigger, "out")
         self.echo = Arduino_Analog(ARDUINO, [echo])
@@ -28,12 +28,8 @@ class Sensor:
 
     def poll(self, n = 10):
         self.values = [self.getDistance() for i in range(n)]
-        return sorted(self.values)
-    
-    def filt(self, values):
+        self.values.sort()
         mean = np.mean(values)
         dev = np.std(values)
-        return [value for value in sorted(values) if abs(value - mean) <= dev]
+        return np.mean([value for value in sorted(values) if abs(value - mean) <= dev])
     
-    def calc(self, values):
-        return np.mean(values)
