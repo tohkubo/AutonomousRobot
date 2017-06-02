@@ -24,7 +24,7 @@ class Maze:
         self.visited = [[False for j in range(C)] for i in range(R)]
         self.R, self.C = R, C
         self.current = [x, y]
-        self.limit = 250
+        self.unitLength = 100
         self.junction = list()
     
     def outofBounds(self, x : int, y : int) -> bool:
