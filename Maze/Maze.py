@@ -70,7 +70,14 @@ class Maze:
             self.car.turnLeft()
             ## do something
             
-            
+    def draw(self, file = 'Mappings.txt'):
+        with open(file, 'w') as f:
+            f.write(' ' + ' '.join(['-----' for i in range(self.C)]) + ' \n')
+            for row in range(self.R):
+                f.write('|' + '|'.join(['     ' for i in range(self.C)]) + '|\n')
+                f.write('|' + '|'.join(['  {}  '.format(self.map[row][col]) for col in range(self.C)]) + '|\n')
+                f.write('|' + '|'.join(['     ' for i in range(self.C)]) + '|\n')
+                f.write(' ' + ' '.join(['-----' for i in range(self.C)]) + ' \n')
         
             
         
