@@ -8,8 +8,14 @@ from Motor import Motor
 
 class Maze:
     
-    # @ param:
-        
+#     @ param:
+#         R  | max row
+#         C  | max col
+#         x  | starting x
+#         y  | starting y
+#         sf | Front Scanner / sensor
+#         sr | Right Scanner / sensor
+#         sl | Left Scanner / sensor
     def __init__(self, R = 10, C = 10, x = 0, y = 0, sf = 0, sr = 1, sl = 4):
         self.SF, self.SR, self.SL = Sensor(sf), Sensor(sr), Sensor(sl)
         self.car = Motor()
