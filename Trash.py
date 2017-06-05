@@ -76,7 +76,7 @@ class Maze:
         
         #  check Left
         if done != True:
-            leftDist = self.SF.poll()
+            leftDist = self.SL.poll()
             if leftDist != None:
                 if leftDist > self.limit:
                     self.path.append([x, y, 'L'])
