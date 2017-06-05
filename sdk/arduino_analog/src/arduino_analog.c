@@ -215,7 +215,7 @@ int main(void)
                     int cycles = 0;
                     while((XSysMon_GetAdcData(SysMonInstPtr,XSM_CH_AUX_MIN+1)*V_Conv) < 2.000){
                         if(cycles > 800){
-                          MAILBOX_DATA_FLOAT(i++) = (float)691;
+                          MAILBOX_DATA_FLOAT(i++) = (float)1.69;
                           break;
                         }
                         cycles++;
@@ -234,7 +234,7 @@ int main(void)
                   int cycles = 0;
                   while((XSysMon_GetAdcData(SysMonInstPtr,XSM_CH_AUX_MIN+9)*V_Conv) < 2.000){
                       if(cycles > 800){
-                        MAILBOX_DATA_FLOAT(i++) = (float)691;
+                        MAILBOX_DATA_FLOAT(i++) = (float)1.69;
                         break;
                       }
                       cycles++;
@@ -253,7 +253,7 @@ int main(void)
                   int cycles = 0;
                   while((XSysMon_GetAdcData(SysMonInstPtr,XSM_CH_AUX_MIN+6)*V_Conv) < 2.000){
                       if(cycles > 800){
-                        MAILBOX_DATA_FLOAT(i++) = (float)691;
+                        MAILBOX_DATA_FLOAT(i++) = (float)1.69;
                         break;
                       }
                       cycles++;
@@ -272,7 +272,7 @@ int main(void)
                   int cycles = 0;
                   while((XSysMon_GetAdcData(SysMonInstPtr,XSM_CH_AUX_MIN+15)*V_Conv) < 2.000){
                       if(cycles > 800){
-                        MAILBOX_DATA_FLOAT(i++) = (float)691;
+                        MAILBOX_DATA_FLOAT(i++) = (float)1.69;
                         break;
                       }
                       cycles++;
@@ -290,7 +290,7 @@ int main(void)
                   int cycles = 0;
                   while((XSysMon_GetAdcData(SysMonInstPtr,XSM_CH_AUX_MIN+5)*V_Conv) < 2.000){
                       if(cycles > 800){
-                        MAILBOX_DATA_FLOAT(i++) = (float)691;
+                        MAILBOX_DATA_FLOAT(i++) = (float)1.69;
                         break;
                       }
                       cycles++;
