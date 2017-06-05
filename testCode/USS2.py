@@ -26,6 +26,4 @@ class Sensor:
         return self.echo.read()[0]
 
     def poll(self, n = 5):
-        value = np.median([self.getDistance() for i in range(n)])
-        return value
-#end of ultrasonic
+        return np.median([self.getDistance() for i in range(n)])
