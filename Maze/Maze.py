@@ -47,6 +47,8 @@ class Maze:
             rightDist = self.SR.poll()
             if frontDist != None:
                 if frontDist > self.limit:
+                    if dist == 0:
+                        dist = rightDist
                     self.path.append([x, y, 'F'])
                     while (rightDist - dist > 10):
                         self.car.Radj()
