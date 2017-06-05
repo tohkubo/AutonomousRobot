@@ -1,9 +1,10 @@
-import time
-import numpy as np
 from pynq import Overlay
 Overlay("base.bit").download()
-from UltraSonic import Sensor
-from Motor import Motor
+import time
+import numpy as np
+from Car import Motor
+from US import Sensor
+
 
 
 class Maze:
@@ -32,61 +33,81 @@ class Maze:
         self.visited[x][y] = True
     
     def outofBounds(self, x : int, y : int) -> bool:
-        return self.x < 0 or self.C < self.x or self.y < 0 or self.R < self.y
+        return x < 0 or self.C < x or y < 0 or self.R < y
     
     
     #  checks front, right, then left, else, UTURN
-    def search(self, x : int, y : int) -> None:
-        frontDist = self.SF.poll()
-        rightDist = self.SR.poll()
-        leftDist = self.SL.poll()
-        
-        junction = list()
+    def search(self, x = 0, y = 0, dist = 0) -> None:
+
+        done = False
+              
         #  check Front
-        if frontDist != None and not self.outofBounds(x, y + 1) and not self.visited[x][y + 1]:
-            if frontDist > self.limit:
-                self.path.append([x, y, 'F'])
-                self.car.W()
-                self.current = [x, y + 1]
-                self.counter += 1
-                self.map[x][y + 1] = self.counter
-                self.visited[x][y + 1] = True
-                search(x, y + 1)
-                return
-            elif 0 < frontDist and frontDist <= self.limit:
-                self.map[x][y + 1] = 1
+        if True:
+            frontDist = self.SF.poll()
+            rightDist = self.SR.poll()
+            if frontDist != None:
+                if frontDist > self.limit:
+                    self.path.append([x, y, 'F'])
+                    while (rightDist - dist > 10):
+                        self.car.Radj()
+                        rightDist = self.SR.poll()
+                    while(dist - rightDist > 10):
+                        self.car.Ladj()
+                        rightDist = self.SR.poll()
+                    self.car.F()
+                    self.current = [x, y + 1]
+#                     self.counter += 1
+#                     self.map[x][y + 1] = self.counter
+#                     self.visited[x][y + 1] = True
+                    self.search(x, y + 1, rightDist)
+                    done = True
+                    return
+#                 elif 0 < frontDist and frontDist <= self.limit:
+# #                     self.map[x][y + 1] = 1
+                
         #  check Right
-        elif rightDist != None and not self.outofBounds(x + 1, y) and not self.visited[x + 1][y]:
-            if rightDist > self.limit:
-                self.path.append([x, y, 'R'])
-                self.car.D()
-                self.car.W()
-                self.current = [x + 1, y]
-                self.counter += 1
-                self.map[x + 1][y] = self.counter
-                self.visited[x + 1][y] = True
-                search(x + 1, y)
-                return
-            elif 0 < rightDist and rightDist <= self.limit:
-                self.map[x + 1][y] = 1
+        if done != True:
+            rightDist = self.SR.poll()
+            if rightDist != None:
+                if rightDist > self.limit:
+                    self.path.append([x, y, 'R'])
+                    self.car.R()
+                    self.car.F()
+                    self.current = [x + 1, y]
+    #                 self.counter += 1
+    #                 self.map[x + 1][y] = self.counter
+    #                 self.visited[x + 1][y] = True
+                    self.search(x + 1, y, rightDist)
+                    done = True
+                    return
+#                 elif 0 < rightDist and rightDist <= self.limit:
+#     #                 self.map[x + 1][y] = 1
+        
         #  check Left
-        elif leftDist != None and not self.outofBounds(x - 1, y) and not self.visited[x - 1][y]:
-            if leftDist > self.limit:
-                self.path.append([x, y, 'L'])
-                self.car.A()
-                self.car.W()
-                self.current = [x - 1, y]
-                self.counter += 1
-                self.map[x - 1][y] = self.counter
-                self.visited[x - 1][y] = True
-                search(x - 1, y)
-                return
-            elif 0 < leftDist and leftDist <= self.limit:
-                self.map[x - 1][y] = 1
-        else:
-            self.car.turnLeft()
-            self.car.turnLeft()
+        if done != True:
+            leftDist = self.SF.poll()
+            if leftDist != None:
+                if leftDist > self.limit:
+                    self.path.append([x, y, 'L'])
+                    self.car.L()
+                    self.car.F()
+                    self.current = [x - 1, y]
+    #                 self.counter += 1
+    #                 self.map[x - 1][y] = self.counter
+    #                 self.visited[x - 1][y] = True
+                    self.search(x - 1, y, rightDist)
+                    done = True
+                    return
+#                 elif 0 < leftDist and leftDist <= self.limit:
+#     #                 self.map[x - 1][y] = 1
+        
+        #  backtrack
+        if done != True:
+            self.car.L()
+            self.car.L()
             self.backtrack()
+            
+            
     
     def backtrack(self):
         #  most recent coord taken is placed at the end (stack);
@@ -114,4 +135,4 @@ class Maze:
                 f.write('|' + '|'.join(['     ' for i in range(self.C)]) + '|\n')
                 f.write(' ' + ' '.join(['-----' for i in range(self.C)]) + ' \n')
         
-            
+        
